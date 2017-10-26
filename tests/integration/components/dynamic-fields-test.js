@@ -67,9 +67,6 @@ test('it adds new line when last one is not empty', async function(assert) {
 test('it removes line when it is empty and it is not last one', async function(assert) {
   this.set('data', Ember.Object.create());
 
-  // @note: this is not working; change is executed only once
-  //         {{input value=record.value change=(action dynamicUpdate record.name)}}
-  // @send stackoverflow
   this.render(hbs`
     {{#dynamic-fields dataObject=data as |record dynamicUpdate|}}
       <span id={{record.name}}>
