@@ -22,11 +22,17 @@ export default Ember.Component.extend({
   },
 
   actions: {
-     update: function(objectName, value) {
+    // target is not used at all but it is required because of ember-power-select
+    // arg3 is either value or jQuery event object
+     update: function(target, objectName, arg3) {
        Ember.Logger.assert(objectName, 'dynamic-fields: objectName parameter for update() should not be empty');
 
-       // @todo: proper fix, this is just for jQuery object
-       value = value.target.value;
+       let value;
+       if ((arg3.__proto__ === jQuery.Event.prototype) || (arg3.__proto__ === Event.prototype)) {
+         value = arg3.target.value;
+       } else {
+         value = arg3
+       }
 
        // note initialization
       if (this.get('_source') === undefined) {
@@ -42,7 +48,7 @@ export default Ember.Component.extend({
 
         this.get('_source').pushObject(Ember.Object.create({
           name: `${this.get('elementPrefix')}_0`,
-          value: '',
+          value: null,
         }));
       }
 
@@ -50,14 +56,18 @@ export default Ember.Component.extend({
       let lastIndex = parseInt(re.exec(this.get('_source.lastObject.name'))[1]);
 
       let matchedRecord = this.get('_source').filterBy('name', objectName)[0];
-      matchedRecord.set('value', value);
+      if (Array.isArray(value)) {
+        matchedRecord.set('value', Ember.A(value));
+      } else {
+        matchedRecord.set('value', value);
+      }
 
       if (`${this.get('elementPrefix')}_${lastIndex}` === objectName) {
         Ember.Logger.debug('dynamic-fields: Adding new field');
         this.get('_source').pushObject(
           Ember.Object.create({
             name: `${this.get('elementPrefix')}_${1 + lastIndex}`,
-            value: Ember.A()
+            value: null
           })
         );
       } else if ((value === undefined) || (value.length === 0) || (value === '')) {

@@ -46,7 +46,7 @@ test('it adds new line when last one is not empty', async function(assert) {
   this.render(hbs`
     {{#dynamic-fields dataObject=data as |record dynamicUpdate|}}
       <span id={{record.name}}>
-        {{input value=record.value change=(action dynamicUpdate record.name)}}
+        {{input value=record.value change=(action dynamicUpdate '' record.name)}}
       </span>
     {{/dynamic-fields}}
     `);
@@ -72,7 +72,7 @@ test('it removes line when it is empty and it is not last one', async function(a
       <span id={{record.name}}>
         <input
             value={{record.value}}
-            oninput={{action dynamicUpdate record.name}}
+            oninput={{action dynamicUpdate '' record.name}}
         />
       </span>
     {{/dynamic-fields}}
