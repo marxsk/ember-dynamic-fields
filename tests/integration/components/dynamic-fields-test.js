@@ -62,6 +62,36 @@ test('it adds new line when last one is not empty', async function(assert) {
 
   await fillIn(input2, 'second');
   assert.equal(3, this.$('input').length, 'There are three input boxes because second one contains text');
+
+  assert.equal('first', this.get('data').objectAt(0).get('value'), 'First element in the result is okay');
+  assert.equal('second', this.get('data').objectAt(1).get('value'), 'Second element in the result is okay');
+});
+
+test('it adds new line when last one is not empty (with dataObjectKey)', async function(assert) {
+  this.set('data', Ember.Object.create());
+
+  this.render(hbs`
+    {{#dynamic-fields dataObject=data dataObjectKey='foo' as |record dynamicUpdate|}}
+      <span id={{record.name}}>
+        {{input value=record.value change=(action dynamicUpdate '' record.name)}}
+      </span>
+    {{/dynamic-fields}}
+    `);
+  assert.equal(1, this.$('input').length, 'There is one input box');
+  const input1 = this.$('input')[0];
+
+  await fillIn(input1, 'first');
+  assert.equal(2, this.$('input').length, 'There are two input boxes because first one contains text');
+
+  const input2 = this.$('input')[1];
+  await fillIn(input1, 'second');
+  assert.equal(2, this.$('input').length, 'There are still two input boxes because first one contains text');
+
+  await fillIn(input2, 'second');
+  assert.equal(3, this.$('input').length, 'There are three input boxes because second one contains text');
+
+  assert.equal('first', this.get('data.foo').objectAt(0).get('value'), 'First element in the result is okay');
+  assert.equal('second', this.get('data.foo').objectAt(1).get('value'), 'Second element in the result is okay');
 });
 
 test('it removes line when it is empty and it is not last one', async function(assert) {
