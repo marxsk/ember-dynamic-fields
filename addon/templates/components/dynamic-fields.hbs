@@ -1,0 +1,7 @@
+{{#each _source as |element|}}
+  {{yield element (action 'update')}}
+{{/each}}
+
+{{#unless _source}}
+  {{yield (hash name=(concat elementPrefix '_0') value=(array)) (action 'update')}}
+{{/unless}}
