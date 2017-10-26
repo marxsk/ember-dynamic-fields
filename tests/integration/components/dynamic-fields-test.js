@@ -86,3 +86,8 @@ test('it removes line when it is empty and it is not last one', async function(a
   await fillIn(input1, '');
   assert.equal(1, this.$('input').length, 'There is just one input box because first one was empty');
 });
+
+skip('it works with ember-power-select-multiple', function(assert) {
+  assert.ok(false);
+  // @todo: also check stored value in array
+});
