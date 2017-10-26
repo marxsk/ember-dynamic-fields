@@ -23,9 +23,9 @@ export default Ember.Component.extend({
 
   actions: {
      update: function(objectName, value) {
-       Ember.Logger.assert(objectName, 'dynamic-fields: objectName paramter for update() should not be empty');
+       Ember.Logger.assert(objectName, 'dynamic-fields: objectName parameter for update() should not be empty');
 
-       // just for jQuery
+       // @todo: proper fix, this is just for jQuery object
        value = value.target.value;
 
        // note initialization
