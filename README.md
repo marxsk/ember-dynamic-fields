@@ -1,26 +1,28 @@
 # ember-dynamic-fields
 
-This README outlines the details of collaborating on this Ember addon.
+This ember-addon was developed to allow dynamically adding multiple form fields. For example, if you want to enter multiple phone numbers for the user. 
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd ember-dynamic-fields`
-* `npm install`
+npm install git+https://git@github.com/marxsk/ember-dynamic-fields.git
 
-## Running
+## Integration
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+This package was tested with:
+  * <input ... >
+  * ember-power-select-multiple
+  * ember-form-for
+  * ember-changeset
 
-## Running Tests
+## Usage
 
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+    {{#dynamic-fields dataObject=data as |record dynamicUpdate|}}
+      <span id={{record.name}}>
+        <input
+            value={{record.value}}
+            oninput={{action dynamicUpdate '' record.name}}
+        />
+      </span>
+    {{/dynamic-fields}}
+    
+The '' is there just to add an empty argument that is ignored but ember-power-select offers value at the third position and this was the easiest way to fix it. 
