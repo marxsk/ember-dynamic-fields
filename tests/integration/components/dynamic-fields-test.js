@@ -3,6 +3,7 @@ import { fillIn } from 'ember-native-dom-helpers';
 import { skip } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
+import { typeInSearch, clickTrigger, selectChoose } from '../../helpers/ember-power-select';
 
 moduleForComponent('dynamic-fields', 'Integration | Component | dynamic fields', {
   integration: true
@@ -115,6 +116,39 @@ test('it removes line when it is empty and it is not last one', async function(a
 
   await fillIn(input1, '');
   assert.equal(1, this.$('input').length, 'There is just one input box because first one was empty');
+});
+
+test('it works with ember-power-select', async function(assert) {
+  assert.expect(5);
+
+  this.set('data', Ember.Object.create());
+  this.set('options', ['abc', 'abc2', 'def', 'xyz']);
+
+  this.render(hbs`
+    {{#dynamic-fields dataObject=data as |record dynamicUpdate|}}
+      {{#power-select
+        selected=record.value
+        options=options
+        onchange=(action dynamicUpdate '' record.name)
+        allowClear=true
+        as |record|
+      }}
+        {{record}}
+      {{/power-select}}
+    {{/dynamic-fields}}
+  `);
+
+  await clickTrigger();
+  assert.equal(Ember.$('.ember-power-select-dropdown').length, 1, 'Dropdown is rendered');
+  assert.equal(Ember.$('.ember-power-select-option').length, this.get('options').length, 'Dropdown contains all items');
+
+  await typeInSearch('ab');
+  // only abc and abc2 options are visible
+  assert.equal(Ember.$('.ember-power-select-option').length, 2, 'Dropdown contains matching items after filtering');
+  await selectChoose('.ember-power-select-trigger', 'abc');
+
+  assert.equal(this.get('data.firstObject.value'), 'abc', 'Selected element is available in dataObject');
+  assert.equal(Ember.$('.ember-power-select-trigger').length, 2, 'Two ember-power-select are rendered');
 });
 
 skip('it works with ember-power-select-multiple', function(assert) {

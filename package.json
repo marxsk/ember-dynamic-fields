@@ -21,7 +21,8 @@
     "ember-cli-babel": "^6.8.2",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-composable-helpers": "2.0.3",
-    "ember-native-dom-helpers": "^0.5.4"
+    "ember-native-dom-helpers": "^0.5.4",
+    "ember-power-select": "^1.9.11"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
@@ -39,6 +40,7 @@
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "^1.0.0",
+    "ember-power-select": "^1.9.11",
     "ember-resolver": "^4.0.0",
     "ember-source": "~2.15.0",
     "loader.js": "^4.2.3"
