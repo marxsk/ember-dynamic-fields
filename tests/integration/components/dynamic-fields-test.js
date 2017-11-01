@@ -119,8 +119,6 @@ test('it removes line when it is empty and it is not last one', async function(a
 });
 
 test('it works with ember-power-select', async function(assert) {
-  assert.expect(5);
-
   this.set('data', Ember.Object.create());
   this.set('options', ['abc', 'abc2', 'def', 'xyz']);
 
@@ -145,7 +143,7 @@ test('it works with ember-power-select', async function(assert) {
   await typeInSearch('ab');
   // only abc and abc2 options are visible
   assert.equal(Ember.$('.ember-power-select-option').length, 2, 'Dropdown contains matching items after filtering');
-  await selectChoose('.ember-power-select-trigger', 'abc');
+  await selectChoose('', 'abc');
 
   assert.equal(this.get('data.firstObject.value'), 'abc', 'Selected element is available in dataObject');
   assert.equal(Ember.$('.ember-power-select-trigger').length, 2, 'Two ember-power-select are rendered');
