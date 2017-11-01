@@ -57,11 +57,7 @@ export default Ember.Component.extend({
       let lastIndex = parseInt(re.exec(this.get('_source.lastObject.name'))[1]);
 
       let matchedRecord = this.get('_source').filterBy('name', objectName)[0];
-      if (Array.isArray(value)) {
-        matchedRecord.set('value', Ember.A(value));
-      } else {
-        matchedRecord.set('value', value);
-      }
+      matchedRecord.set('value', value);
 
       if (`${this.get('elementPrefix')}_${lastIndex}` === objectName) {
         Ember.Logger.debug('dynamic-fields: Adding new field');
