@@ -1,6 +1,6 @@
 {
   "name": "ember-dynamic-fields",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "Ember addon that creates multiple form fields of the same type",
   "keywords": [
     "ember-addon"
@@ -11,7 +11,7 @@
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "",
+  "repository": "https://github.com/marxsk/ember-dynamic-fields.git",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
