@@ -28,6 +28,7 @@ export default Ember.Component.extend({
        Ember.Logger.assert(objectName, 'dynamic-fields: objectName parameter for update() should not be empty');
 
        let value;
+       /*global jQuery*/
        if ((arg3.__proto__ === jQuery.Event.prototype) || (arg3.__proto__ === Event.prototype)) {
          value = arg3.target.value;
        } else {
