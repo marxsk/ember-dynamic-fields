@@ -149,7 +149,37 @@ test('it works with ember-power-select', async function(assert) {
   assert.equal(Ember.$('.ember-power-select-trigger').length, 2, 'Two ember-power-select are rendered');
 });
 
-skip('it works with ember-power-select-multiple', function(assert) {
+test('it works with ember-power-select-multiple', async function(assert) {
+  this.set('data', Ember.Object.create());
+  this.set('options', ['abc', 'abc2', 'def', 'xyz']);
+
+  this.render(hbs`
+    {{#dynamic-fields dataObject=data as |record dynamicUpdate|}}
+      {{#power-select-multiple
+        selected=record.value
+        options=options
+        onchange=(action dynamicUpdate '' record.name)
+        allowClear=true
+        as |record|
+      }}
+        {{record}}
+      {{/power-select-multiple}}
+    {{/dynamic-fields}}
+  `);
+
+  await clickTrigger();
+  assert.equal(Ember.$('.ember-power-select-dropdown').length, 1, 'Dropdown is rendered');
+  assert.equal(Ember.$('.ember-power-select-option').length, this.get('options').length, 'Dropdown contains all items');
+
+  await typeInSearch('ab');
+  // only abc and abc2 options are visible and only visible options can be selectChoose-d
+  assert.equal(Ember.$('.ember-power-select-option').length, 2, 'Dropdown contains matching items after filtering');
+  await selectChoose('', 'abc');
+  await selectChoose('', 'xyz');
+
+  assert.deepEqual(this.get('data.firstObject.value'), ['abc', 'xyz'], 'xxx');
+  assert.equal(Ember.$('.ember-power-select-trigger').length, 2, 'Two ember-power-select-multiple are rendered');
+});
   assert.ok(false);
   // @todo: also check stored value in array
 });
