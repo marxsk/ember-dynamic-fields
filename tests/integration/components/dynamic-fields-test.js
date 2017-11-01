@@ -180,6 +180,7 @@ test('it works with ember-power-select-multiple', async function(assert) {
   assert.deepEqual(this.get('data.firstObject.value'), ['abc', 'xyz'], 'xxx');
   assert.equal(Ember.$('.ember-power-select-trigger').length, 2, 'Two ember-power-select-multiple are rendered');
 });
+
+skip('it works with ember-form-for', function(assert) {
   assert.ok(false);
-  // @todo: also check stored value in array
 });
