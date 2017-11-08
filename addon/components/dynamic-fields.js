@@ -7,6 +7,8 @@ export default Ember.Component.extend({
   dataObject: undefined,
   dataObjectKey: undefined,
 
+  max: -1,
+
   _source: undefined,
   /**
    * The original idea was to use 'source' as the basis for changes.

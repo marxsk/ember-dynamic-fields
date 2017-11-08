@@ -53,6 +53,33 @@ test('it adds new line when last one is not empty', async function(assert) {
   assert.equal('second', this.get('data')[1], 'Second element in the result is okay');
 });
 
+test('it adds new line when last one is not empty and there is less than "max" lines', async function(assert) {
+  this.set('data', Ember.Object.create());
+  this.render(hbs`
+    {{#dynamic-fields dataObject=data max=2 as |record index dynamicUpdate|}}
+      <input
+        value={{record}}
+        oninput={{action dynamicUpdate '' index}}
+      />
+    {{/dynamic-fields}}
+    `);
+  assert.equal(1, this.$('input').length, 'There is one input box');
+  const input1 = this.$('input')[0];
+
+  await fillIn(input1, 'first');
+  assert.equal(2, this.$('input').length, 'There are two input boxes because first one contains text');
+
+  const input2 = this.$('input')[1];
+  await fillIn(input1, 'new-first');
+  assert.equal(2, this.$('input').length, 'There are still two input boxes because only first one contains text');
+
+  await fillIn(input2, 'second');
+  assert.equal(2, this.$('input').length, 'There are still just two input boxes because of "max" limit');
+
+  assert.equal('new-first', this.get('data')[0], 'First element in the result is okay');
+  assert.equal('second', this.get('data')[1], 'Second element in the result is okay');
+});
+
 test('it adds new line when last one is not empty (with dataObjectKey)', async function(assert) {
   this.set('data', Ember.Object.create());
 

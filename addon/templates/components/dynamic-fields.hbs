@@ -3,7 +3,9 @@
 {{/each}}
 
 {{#if _source}}
-  {{yield (array) _source.length (action 'update')}}
+  {{#if (or (gt max _source.length) (eq max -1))}}
+    {{yield (array) _source.length (action 'update')}}
+  {{/if}}
 {{else}}
   {{yield (array) 0 (action 'update')}}
 {{/if}}
