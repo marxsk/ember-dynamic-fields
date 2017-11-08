@@ -6,7 +6,6 @@ export default Ember.Component.extend({
 
   dataObject: undefined,
   dataObjectKey: undefined,
-  elementPrefix: 'dynamic',
 
   _source: undefined,
   /**
@@ -24,8 +23,8 @@ export default Ember.Component.extend({
   actions: {
     // target is not used at all but it is required because of ember-power-select
     // arg3 is either value or jQuery event object
-     update: function(target, objectName, arg3) {
-       Ember.Logger.assert(objectName, 'dynamic-fields: objectName parameter for update() should not be empty');
+     update: function(target, targetIndex, arg3) {
+       Ember.Logger.assert(typeof targetIndex === "number", 'dynamic-fields: targetIndex parameter for update() should be number');
 
        let value;
        /*global jQuery*/
@@ -46,33 +45,17 @@ export default Ember.Component.extend({
         } else {
           this.set('dataObject', this.get('_source'));
         }
-
-        this.get('_source').pushObject(Ember.Object.create({
-          name: `${this.get('elementPrefix')}_0`,
-          value: null,
-        }));
       }
 
-      const re = /(?:_([^_]+))?$/;
-      let lastIndex = parseInt(re.exec(this.get('_source.lastObject.name'))[1]);
-
-      let matchedRecord = this.get('_source').filterBy('name', objectName)[0];
-      matchedRecord.set('value', value);
-
-      if (`${this.get('elementPrefix')}_${lastIndex}` === objectName) {
-        Ember.Logger.debug('dynamic-fields: Adding new field');
-        this.get('_source').pushObject(
-          Ember.Object.create({
-            name: `${this.get('elementPrefix')}_${1 + lastIndex}`,
-            value: null
-          })
-        );
-      } else if ((value === undefined) || (value.length === 0) || (value === '')) {
-        Ember.Logger.debug(`dynamic-fields: Removing field ${objectName}`);
-
-        this.get('_source').removeObjects(
-            this.get('_source').filterBy('name', objectName)
-        );
+      if (targetIndex > (this.get('_source.length') - 1)) {
+        this.get('_source').pushObject(value);
+      } else {
+        if ((value === undefined) || (value.length === 0) || (value === '')) {
+          Ember.Logger.debug(`dynamic-fields: Removing field ${targetIndex}`);
+          this.get('_source').removeAt(targetIndex);
+        } else {
+          this.get('_source').replace(targetIndex, 1, [value]);
+        }
       }
     }
   }
