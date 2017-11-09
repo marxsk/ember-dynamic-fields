@@ -22,6 +22,20 @@ export default Ember.Component.extend({
       Ember.Logger.assert(this.get('dataObject') !== undefined, 'dynamic-fields: dataObject have to be defined');
   },
 
+  didReceiveAttrs() {
+    let x = this.get('dataObject');
+    if (this.get('dataObjectKey')) {
+      x = this.get(`dataObject.${this.get('dataObjectKey')}`);
+    }
+
+    if (Ember.isArray(x)) {
+      Ember.Logger.debug('dynamic-fields: Input object was accepted');
+      this.set('_source', x);
+    } else if (x !== undefined) {
+      Ember.Logger.assert('Input object have to be Ember.Array if you want to pass data in');
+    }
+  },
+
   actions: {
     // target is not used at all but it is required because of ember-power-select
     // arg3 is either value or jQuery event object

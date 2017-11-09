@@ -21,9 +21,39 @@ test('it yields content once when there are no data', function(assert) {
   assert.equal(this.$().text().trim(), 'template block text');
 });
 
-skip('it yields content according to number of records from dataObject', function(assert) {
-  // @todo: There is no support for showing existing content yet
-  assert.ok(false);
+test('it yields content according to number of records from dataObject', function(assert) {
+  this.set('data', Ember.A(['first', 'second']));
+  this.render(hbs`
+    {{#dynamic-fields dataObject=data as |record index dynamicUpdate|}}
+      <input
+        value={{record}}
+        oninput={{action dynamicUpdate '' index}}
+      />
+    {{/dynamic-fields}}
+    `);
+
+  const input1 = this.$('input')[0];
+
+  assert.equal(input1.value, 'first', 'The first input box contains right string');
+  assert.equal(3, this.$('input').length, 'There are two filled input boxes and one empty');
+});
+
+test('it yields content according to number of records from dataObjectKey', function(assert) {
+  this.set('data', Ember.Object.create());
+  this.set('data.foo', Ember.A(['first', 'second']));
+  this.render(hbs`
+    {{#dynamic-fields dataObject=data dataObjectKey='foo' as |record index dynamicUpdate|}}
+      <input
+        value={{record}}
+        oninput={{action dynamicUpdate '' index}}
+      />
+    {{/dynamic-fields}}
+    `);
+
+  const input1 = this.$('input')[0];
+
+  assert.equal(input1.value, 'first', 'The first input box contains right string');
+  assert.equal(3, this.$('input').length, 'There are two filled input boxes and one empty');
 });
 
 test('it adds new line when last one is not empty', async function(assert) {
