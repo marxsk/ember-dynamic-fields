@@ -16,11 +16,11 @@ This package was tested with:
 
 ## Usage
 
-    {{#dynamic-fields dataObject=data as |record dynamicUpdate|}}
-      <span id={{record.name}}>
+    {{#dynamic-fields dataObject=data as |record index dynamicUpdate|}}
+      <span id={{index}}>
         <input
-            value={{record.value}}
-            oninput={{action dynamicUpdate '' record.name}}
+            value={{record}}
+            oninput={{action dynamicUpdate '' index}}
         />
       </span>
     {{/dynamic-fields}}
