@@ -10,6 +10,14 @@ export default Ember.Component.extend({
   /** Maximal count of repeated elements if defined **/
   max: undefined,
 
+  /**
+   * Function that verifies if data in the record should be considered empty.
+   * For a more complex element it makes sense to replace this function with user defined.
+   */
+  isEmpty: (value) => {
+      return ((value === undefined) || (value.length === 0) || (value === ''));
+  },
+
   _source: undefined,
   /**
    * The original idea was to use 'source' as the basis for changes.
@@ -67,7 +75,7 @@ export default Ember.Component.extend({
       if (targetIndex > (this.get('_source.length') - 1)) {
         this.get('_source').pushObject(value);
       } else {
-        if ((value === undefined) || (value.length === 0) || (value === '')) {
+        if (this.get('isEmpty')(value)) {
           Ember.Logger.debug(`dynamic-fields: Removing field ${targetIndex}`);
           this.get('_source').removeAt(targetIndex);
         } else {
