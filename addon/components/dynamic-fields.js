@@ -7,7 +7,8 @@ export default Ember.Component.extend({
   dataObject: undefined,
   dataObjectKey: undefined,
 
-  max: -1,
+  /** Maximal count of repeated elements if defined **/
+  max: undefined,
 
   _source: undefined,
   /**
