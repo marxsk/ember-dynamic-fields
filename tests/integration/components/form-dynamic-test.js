@@ -1,6 +1,7 @@
 import { module, test } from "qunit";
 import { setupRenderingTest } from "ember-qunit";
 import { render } from "@ember/test-helpers";
+import { fillIn } from "ember-native-dom-helpers";
 import hbs from "htmlbars-inline-precompile";
 
 import Ember from "ember";
@@ -53,6 +54,28 @@ module("Integration | Component | form-dynamic", function(hooks) {
       this.$("span")[2].innerText,
       "",
       "Content of the last/empty element matches"
+    );
+  });
+
+  test("it react to the changes on the last record by creating new field", async function(assert) {
+    this.set("data", Ember.A());
+
+    await render(hbs`
+            {{#form-dynamic dataObject=data as |record index dynAction|}}
+              <input value={{record}} oninput={{action dynAction '' index}}/>
+              <br />
+            {{/form-dynamic}}
+            `);
+
+    await fillIn(this.$("input")[0], "first");
+    assert.equal(this.$("input").length, 2, "Second field is spawned");
+    assert.equal(this.$("input")[1].value, "", "Second field is empty");
+
+    await fillIn(this.$("input")[0], "again");
+    assert.equal(
+      this.$("input").length,
+      2,
+      "Third field is not spawned as last field is still empty"
     );
   });
 });

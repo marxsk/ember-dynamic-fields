@@ -1,3 +1,3 @@
 {{#each _source as |element index|}}
-  {{yield element index}}
+  {{yield element index (action 'update')}}
 {{/each}}
