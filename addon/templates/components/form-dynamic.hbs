@@ -1,0 +1,5 @@
+{{#each dataObject as |element index|}}
+  {{yield element index}}
+{{else}}
+  {{yield}}
+{{/each}}
