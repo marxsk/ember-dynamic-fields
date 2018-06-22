@@ -39,15 +39,19 @@ module("Integration | Component | form-dynamic", function(hooks) {
   });
 
   test("it yields content for multiple records according to input data", async function(assert) {
-    this.set("data", Ember.A(["first", "second"]));
+    this.set("data", Ember.A([]));
+    this.get("data").pushObject(Ember.Object.create({ value: "first" }));
+    this.get("data").pushObject(Ember.Object.create({ value: "second" }));
     await render(hbs`
           {{#form-dynamic dataObject=data as |record|}}
-            <span>{{record}}</span><br />
+            <span>{{record.value}}</span><br />
           {{/form-dynamic}}
           `);
     assert.equal(
       this.$("span")[0].innerText,
-      this.get("data")[0],
+      this.get("data")
+        .objectAt(0)
+        .get("value"),
       "Content of the first element matches"
     );
     assert.equal(

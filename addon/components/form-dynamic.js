@@ -26,11 +26,7 @@ export default Component.extend({
     }
 
     if (!this.isEmpty(this.get("_source.lastObject"))) {
-      if (typeof this.get("_source.firstObject") === "string") {
-        this.get("_source").pushObject("");
-      } else {
-        this.get("_source").pushObject(Ember.Object.create());
-      }
+      this.get("_source").pushObject(Ember.Object.create());
     }
   },
 
