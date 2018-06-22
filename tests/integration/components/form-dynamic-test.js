@@ -1,5 +1,5 @@
 import { module, test } from "qunit";
-import { setupRenderingTest } from "ember-qunit";
+import { setupRenderingTest, skip } from "ember-qunit";
 import { render } from "@ember/test-helpers";
 import { fillIn } from "ember-native-dom-helpers";
 import hbs from "htmlbars-inline-precompile";
@@ -9,7 +9,7 @@ import Ember from "ember";
 module("Integration | Component | form-dynamic", function(hooks) {
   setupRenderingTest(hooks);
 
-  test("it yields content once when only empty dataset available", async function(assert) {
+  test("it yields content when only empty dataset is available", async function(assert) {
     this.set("data", Ember.A());
     await render(hbs`{{form-dynamic dataObject=data}}`);
     assert.equal(this.element.textContent.trim(), "");
@@ -24,7 +24,7 @@ module("Integration | Component | form-dynamic", function(hooks) {
     assert.equal(this.element.textContent.trim(), "template block text");
   });
 
-  test("it yields fields according to number of records in dataObject (including new empty one)", async function(assert) {
+  test("it yields proper count of elements for multiple records (including new empty one)", async function(assert) {
     this.set("data", Ember.A(["first", "second"]));
     await render(hbs`
           {{#form-dynamic dataObject=data as |record|}}
@@ -38,7 +38,7 @@ module("Integration | Component | form-dynamic", function(hooks) {
     );
   });
 
-  test("it yields content according to input data (including new empty one)", async function(assert) {
+  test("it yields content for multiple records according to input data", async function(assert) {
     this.set("data", Ember.A(["first", "second"]));
     await render(hbs`
           {{#form-dynamic dataObject=data as |record|}}
