@@ -6,8 +6,8 @@ export default Component.extend({
   layout,
   _source: undefined,
 
-  isEmpty(record) {
-    return record === "";
+  isEmpty() {
+    return false;
   },
 
   didReceiveAttrs() {
@@ -35,35 +35,35 @@ export default Component.extend({
   },
 
   actions: {
-    update: function(target, targetIndex, arg3) {
+    update: async function(target, targetIndex) {
       Ember.Logger.assert(
         typeof targetIndex === "number",
         "dynamic-fields: targetIndex parameter for update() should be number"
       );
 
-      let value;
-      /*global jQuery*/
-      if (
-        arg3.__proto__ === jQuery.Event.prototype ||
-        arg3.__proto__ === Event.prototype
-      ) {
-        value = arg3.target.value;
-      } else {
-        value = arg3;
-      }
-
+      const value = this.get("_source").objectAt(targetIndex);
       if (targetIndex == this.get("_source.length") - 1) {
-        // @refactor -- should be same as with the didReceiveAttrs
         if (!this.isEmpty(value)) {
-          if (typeof this.get("_source.firstObject") === "string") {
-            this.get("_source").pushObject("");
-          } else {
-            //this.get("_source").pushObject(Ember.Object.create());
-            this.get("_source").pushObject("");
+          if (
+            this.getWithDefault("limit", -1) === -1 ||
+            this.get("limit") - 1 > targetIndex
+          ) {
+            this.get("_source").pushObject(Ember.Object.create());
           }
         }
       } else {
-        // @todo: delete field
+        if (this.isEmpty(value)) {
+          const focusedElements = Ember.$(":focus");
+          if (focusedElements.length === 1) {
+            const focusedIndex = Ember.$("input")
+              .toArray()
+              .indexOf(focusedElements[0]);
+            await this.get("_source").removeAt(targetIndex);
+            Ember.$(`input:eq(${focusedIndex})`).focus();
+          } else {
+            this.get("_source").removeAt(targetIndex);
+          }
+        }
       }
     }
   }
