@@ -24,6 +24,21 @@ module("Integration | Component | form-dynamic", function(hooks) {
     assert.equal(this.element.textContent.trim(), "template block text");
   });
 
+  test("it yields content when only empty dataset is available using dataObjectKey", async function(assert) {
+    this.set("data", Ember.Object.create());
+    await render(hbs`{{form-dynamic dataObject=data dataObjectKey='text'}}`);
+    assert.equal(this.element.textContent.trim(), "");
+
+    this.set("data2", Ember.A());
+    // @todo: use 'data' instead of data2 - content is preserved, why??
+    await render(hbs`
+      {{#form-dynamic dataObject=data2}}
+        template block text
+      {{/form-dynamic}}
+    `);
+    assert.equal(this.element.textContent.trim(), "template block text");
+  });
+
   test("it yields proper count of elements for multiple records (including new empty one)", async function(assert) {
     this.set("data", Ember.A(["first", "second"]));
     await render(hbs`
@@ -50,6 +65,35 @@ module("Integration | Component | form-dynamic", function(hooks) {
     assert.equal(
       this.$("span")[0].innerText,
       this.get("data")
+        .objectAt(0)
+        .get("value"),
+      "Content of the first element matches"
+    );
+    assert.equal(
+      this.$("span")[2].innerText,
+      "",
+      "Content of the last/empty element matches"
+    );
+  });
+
+  test("it yields content for multiple records according to input data using dataObjectKey", async function(assert) {
+    this.set("data", Ember.Object.create());
+    this.set("data.spans", Ember.A([]));
+    this.get("data.spans").pushObject(Ember.Object.create({ value: "first" }));
+    this.get("data.spans").pushObject(Ember.Object.create({ value: "second" }));
+    this.set("isEmpty", record => {
+      return record && record.value === "";
+    });
+
+    await render(hbs`
+          {{#form-dynamic dataObject=data dataObjectKey='spans' isEmpty=isEmpty as |record|}}
+            <span>{{record.value}}</span><br />
+          {{/form-dynamic}}
+          `);
+
+    assert.equal(
+      this.$("span")[0].innerText,
+      this.get("data.spans")
         .objectAt(0)
         .get("value"),
       "Content of the first element matches"
@@ -105,6 +149,45 @@ module("Integration | Component | form-dynamic", function(hooks) {
     assert.equal(
       this.$("input")[0].value,
       this.get("data")[0].value,
+      "Content of the first element matches"
+    );
+    await fillIn(this.$("input")[0], "");
+    assert.equal(
+      this.$("input").length,
+      2,
+      "Third field is not spawned as the last field is still empty"
+    );
+    assert.equal(
+      this.$("input")[0].value,
+      "second",
+      "Content of the first element matches after deletion"
+    );
+    assert.equal(
+      this.$("input")[1].value,
+      "",
+      "Content of the last element matches after deletion"
+    );
+  });
+
+  test("it reacts to the empty record by deleting the field using dataObjectKey", async function(assert) {
+    this.set("data", Ember.Object.create());
+    this.set("data.spans", Ember.A([]));
+    this.get("data.spans").pushObject(Ember.Object.create({ value: "first" }));
+    this.get("data.spans").pushObject(Ember.Object.create({ value: "second" }));
+
+    this.set("isEmpty", record => {
+      return record && record.value === "";
+    });
+
+    await render(hbs`
+            {{#form-dynamic dataObject=data dataObjectKey='spans' isEmpty=isEmpty as |record index dynAction _source|}}
+              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction '' index)) value="target.value"}}/>
+              <br />
+            {{/form-dynamic}}
+            `);
+    assert.equal(
+      this.$("input")[0].value,
+      this.get("data.spans")[0].value,
       "Content of the first element matches"
     );
     await fillIn(this.$("input")[0], "");

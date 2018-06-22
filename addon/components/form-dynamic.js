@@ -13,9 +13,18 @@ export default Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
 
-    if (Ember.isArray(this.get("dataObject"))) {
-      this.set("_source", this.get("dataObject"));
-    } else if (typeof this.get("dataObject") !== "undefined") {
+    let dataObject = this.get("dataObject");
+    if (this.get("dataObjectKey")) {
+      dataObject = this.get("dataObject").get(this.get("dataObjectKey"));
+      if (typeof dataObject === "undefined") {
+        this.get("dataObject").set(this.get("dataObjectKey"), Ember.A());
+        dataObject = this.get("dataObject").get(this.get("dataObjectKey"));
+      }
+    }
+
+    if (Ember.isArray(dataObject)) {
+      this.set("_source", dataObject);
+    } else if (typeof dataObject !== "undefined") {
       Ember.Logger.assert(
         "dataObject have to be Ember.Array if you want to pass data in"
       );
@@ -24,7 +33,6 @@ export default Component.extend({
       Ember.Logger.assert("No object was entered - unable to create one");
       return;
     }
-
     if (!this.isEmpty(this.get("_source.lastObject"))) {
       this.get("_source").pushObject(Ember.Object.create());
     }
