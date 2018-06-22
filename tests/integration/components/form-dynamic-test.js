@@ -110,7 +110,7 @@ module("Integration | Component | form-dynamic", function(hooks) {
 
     await render(hbs`
             {{#form-dynamic dataObject=data as |record index dynAction|}}
-              <input value={{record.value}} oninput={{action dynAction '' index}}/>
+              <input value={{record.value}} oninput={{action dynAction index}}/>
               <br />
             {{/form-dynamic}}
             `);
@@ -142,7 +142,7 @@ module("Integration | Component | form-dynamic", function(hooks) {
 
     await render(hbs`
             {{#form-dynamic dataObject=data isEmpty=isEmpty as |record index dynAction|}}
-              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction '' index)) value="target.value"}}/>
+              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction index)) value="target.value"}}/>
               <br />
             {{/form-dynamic}}
             `);
@@ -181,7 +181,7 @@ module("Integration | Component | form-dynamic", function(hooks) {
 
     await render(hbs`
             {{#form-dynamic dataObject=data dataObjectKey='spans' isEmpty=isEmpty as |record index dynAction|}}
-              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction '' index)) value="target.value"}}/>
+              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction index)) value="target.value"}}/>
               <br />
             {{/form-dynamic}}
             `);
@@ -226,7 +226,7 @@ module("Integration | Component | form-dynamic", function(hooks) {
 
     await render(hbs`
             {{#form-dynamic dataObject=data isEmpty=isEmpty as |record index dynAction|}}
-              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction '' index)) value="target.value"}}/>
+              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction index)) value="target.value"}}/>
               <br />
             {{/form-dynamic}}
             `);
@@ -250,7 +250,7 @@ module("Integration | Component | form-dynamic", function(hooks) {
 
     await render(hbs`
             {{#form-dynamic dataObject=data isEmpty=isEmpty limit=4 as |record index dynAction|}}
-              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction '' index)) value="target.value"}}/>
+              <input value={{record.value}} oninput={{action (pipe (action (mut record.value)) (action dynAction index)) value="target.value"}}/>
               <br />
             {{/form-dynamic}}
             `);

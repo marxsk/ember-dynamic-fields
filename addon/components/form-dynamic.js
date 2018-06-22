@@ -39,7 +39,7 @@ export default Component.extend({
   },
 
   actions: {
-    update: async function(target, targetIndex) {
+    update: async function(targetIndex) {
       Ember.Logger.assert(
         typeof targetIndex === "number",
         "dynamic-fields: targetIndex parameter for update() should be number"
