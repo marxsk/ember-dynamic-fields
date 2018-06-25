@@ -5,6 +5,11 @@ import { fillIn } from "ember-native-dom-helpers";
 import hbs from "htmlbars-inline-precompile";
 
 import Ember from "ember";
+import {
+  typeInSearch,
+  clickTrigger,
+  selectChoose
+} from "ember-power-select/test-support/helpers";
 
 module("Integration | Component | form-dynamic", function(hooks) {
   setupRenderingTest(hooks);
@@ -260,6 +265,70 @@ module("Integration | Component | form-dynamic", function(hooks) {
       this.$("input").length,
       4 + 0,
       "Count of yielded elements matches"
+    );
+  });
+
+  test("it works with ember-power-select", async function(assert) {
+    this.set("data", Ember.A([]));
+    this.get("data").pushObject(Ember.Object.create({ selected: "abc" }));
+    this.get("data").pushObject(Ember.Object.create({ selected: "def" }));
+
+    this.set("options", ["abc", "abc2", "def", "xyz"]);
+
+    this.set("setSelected", (record, value) => {
+      record.set("selected", value);
+    });
+
+    this.set("isEmpty", record => {
+      return !(
+        record && (record.selected !== undefined) & (record.selected !== null)
+      );
+    });
+
+    await this.render(hbs`
+      {{#form-dynamic dataObject=data isEmpty=isEmpty as |record index dynAction|}}
+        {{#power-select
+          selected=record.selected
+          options=options
+          onchange=(action (pipe (action setSelected record) (action dynAction index)))
+          allowClear=true
+          as |r|
+        }}
+          {{r}}
+        {{/power-select}}
+      {{/form-dynamic}}
+    `);
+
+    await clickTrigger();
+    assert.equal(
+      Ember.$(".ember-power-select-dropdown").length,
+      1,
+      "Dropdown is rendered"
+    );
+    assert.equal(
+      Ember.$(".ember-power-select-option").length,
+      this.get("options").length,
+      "Dropdown contains all items"
+    );
+
+    await typeInSearch("ab");
+    // only abc and abc2 options are visible
+    assert.equal(
+      Ember.$(".ember-power-select-option").length,
+      2,
+      "Dropdown contains matching items after filtering"
+    );
+    await selectChoose("", "abc");
+
+    assert.equal(
+      this.get("data.firstObject.selected"),
+      "abc",
+      "Selected element is available in dataObject"
+    );
+    assert.equal(
+      Ember.$(".ember-power-select-trigger").length,
+      2 + 1,
+      "Two filled ember-power-select and one empty are rendered"
     );
   });
 });

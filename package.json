@@ -23,7 +23,8 @@
     "ember-cli-babel": "^6.6.0",
     "ember-cli-htmlbars": "^2.0.1",
     "ember-composable-helpers": "^2.1.0",
-    "ember-native-dom-helpers": "^0.5.10"
+    "ember-native-dom-helpers": "^0.5.10",
+    "ember-power-select": "^2.0.3"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
