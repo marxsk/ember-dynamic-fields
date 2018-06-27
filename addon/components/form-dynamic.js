@@ -33,7 +33,10 @@ export default Component.extend({
       Ember.Logger.assert("No object was entered - unable to create one");
       return;
     }
-    if (!this.isEmpty(this.get("_source.lastObject"))) {
+    if (
+      this.get("_source.length") === 0 ||
+      !this.isEmpty(this.get("_source.lastObject"))
+    ) {
       this.get("_source").pushObject(Ember.Object.create());
     }
   },
